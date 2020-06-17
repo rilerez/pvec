@@ -1,0 +1,57 @@
+* what
+** functional data structures for C++
+** pluggable memory management schemes for them
+** currently experimental / pre alpha / drawing board
+* why
+** why functional programming?
+*** functional programming
+**** benefits
+***** less state
+***** explicit state
+***** easier to reason about
+***** concurrency
+****** shared immutable memory = no lock
+** why functional data structures?
+*** even outside of functional programming you need to keep old values
+**** undo
+*** efficient/effective fp needs a variety of data structures
+*** no modification => they must be designed to share structure
+**** classical data structures do not
+*** value semantics for node-based containers
+** why make the memory management pluggable/separate
+*** all functional data structures need to share internal data
+**** you cannot copy everything every time you want to update
+**** udpate = new head/bookkeeping, but point to as much "old" internal data as possible. only update the part that changed
+***** like copy on write but much less copying
+*** lifetime of internals of data structures is determined at run time
+*** ==> deterministic destruction won't work
+*** memory management schemes + garbage collectors is complex. this complexity must not leak into the data structures themselves. but we still need a way to tweak the choices.
+*** most fp languages use a garbage collector
+**** C++ doesn't have a built-in garbage collector because picking a global garbage collecting scheme is not appropriate in many situations
+**** no one size fits all
+*** the organization of the data structure is conceptually separate from the mechanism you choose to manage memory
+**** shared_ptr vs something else?
+*** why not use shared_ptr?
+**** reference counting is not always optimal/appropriate
+***** functional programming and functional datastructures need to make tons of shallow copies.
+***** needing to perform atomic operations on every update (hence every shallow copy) is not always an acceptable bottleneck
+***** an unfortunate chain of destructors can still blow the stack with reference counting
+***** the mechanism shared_ptr uses to allocate may not be appropriate, so allocation needs to be decoupled anyway
+**** tracing garbage collectors can allocate fast
+***** atomically bumping a pointer
+****** distributing parts of the heap to individual threads can eliminate the need for synchronization/atomicity
+**** compacting garbage collectors can improve cace locality of data
+**** different gc schemes require different trade-offs
+***** throughput vs latency
+**** is a stop-the-world collection acceptable?
+**** data used for intermediate calculations can be fully discarded => no need for any memory management
+**** sometimes tagged pointers > variant of shared pointers
+***** more compact => better locality
+*** why not just use allocators?
+**** allocators are useful here
+**** but there is more that needs to be done
+**** memory access patterns are different from non-functional code
+**** need to interface at a higher level (type-aware) than allocators
+***** option to organize allocations by type
+****** instead of saving a byte for a variant, can check address
+***** the data structures will specifically ask for nodes
