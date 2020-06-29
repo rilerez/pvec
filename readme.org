@@ -11,8 +11,9 @@
   - shared immutable memory = no lock
 ** why functional data structures?
 - Pure functional programming does not allow values to change. Instead of modifying a data structure in place (destructive updates), a functional program must produce updated copies (non--destructive updates). Because of this constraint, functional data structures must make copy-with-modification cheap. This is achieved by sharing internal structure among copies; updates create a shallow copy, changing only what is necessary to incorporate the new data.
+
 #+CAPTION: two trees sharing internal structure. Taken from
-([[https://hypirion.com/musings/understanding-persistent-vector-pt-1][source of the figure]])
+An example of structure sharing([[https://hypirion.com/musings/understanding-persistent-vector-pt-1][source of the figure]])
 #+NAME: fig:structure-sharing
 [[./structure_sharing.png]]
 
