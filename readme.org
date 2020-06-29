@@ -1,27 +1,28 @@
-* what
-** functional data structures for C++
-** pluggable memory management schemes for them
-** currently experimental / pre alpha / drawing board
+* what: This library aims to provide
+- functional data structures for C++
+- pluggable memory management schemes for them
+- currently experimental / pre alpha / drawing board
 * why
 ** why functional programming?
-*** functional programming
-**** benefits
-***** less state
-***** explicit state
-***** easier to reason about
-***** concurrency
-****** shared immutable memory = no lock
+- less state
+- explicit state
+- easier to reason about
+- concurrency
+  - shared immutable memory = no lock
 ** why functional data structures?
-*** even outside of functional programming you need to keep old values
-**** undo
-*** efficient/effective fp needs a variety of data structures
-*** no modification => they must be designed to share structure
-**** classical data structures do not
-*** value semantics for node-based containers
+- Pure functional programming does not allow values to change. Instead of modifying a data structure in place (destructive updates), a functional program must produce updated copies (non--destructive updates). Because of this constraint, functional data structures must make copy-with-modification cheap. This is achieved by sharing internal structure among copies; updates create a shallow copy, changing only what is necessary to incorporate the new data.
+#+CAPTION: two trees sharing internal structure. Taken from
+[[https://hypirion.com/musings/understanding-persistent-vector-pt-1][this post about Clojure's persistent vectors.]]
+#+NAME: fig:structure-sharing
+[[./structure_sharing.png]]
+
+- even outside of functional programming you need to keep old values
+  - undo
+- value semantics for node-based containers
 ** why make the memory management pluggable/separate
 *** all functional data structures need to share internal data
 **** you cannot copy everything every time you want to update
-**** udpate = new head/bookkeeping, but point to as much "old" internal data as possible. only update the part that changed
+**** update = new head/bookkeeping, but point to as much "old" internal data as possible. only update the part that changed
 ***** like copy on write but much less copying
 *** lifetime of internals of data structures is determined at run time
 *** ==> deterministic destruction won't work
